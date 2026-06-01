@@ -11,7 +11,7 @@
 class Logger
 {
 public:
-    explicit Logger(const std::string &name, const std::string &dir);
+    explicit Logger(const std::string &log_name, const std::string &log_dir);
 
     template <typename Derived>
     void log(const std::string &key, const Eigen::MatrixBase<Derived> &mat)
