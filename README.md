@@ -20,3 +20,25 @@ This repository provides two lightweight wrappers:
 ```cpp
 Logger logger(name, directory);
 ```
+4. If initialization succeeds, you can begin logging.
+```cpp
+logger.log("variable_name", variable);
+```
+5. Flush when finished
+```cpp
+logger.flush();
+```
+**Example**
+```cpp
+#include "matlogger/logger.hpp"
+int main()
+{
+    Logger logger("my_log", "/path/to/output");
+    for (int i = 0; i < 100; ++i)
+    {
+        logger.log("index", i);
+    }
+    logger.flush();
+    return 0;
+}
+```
