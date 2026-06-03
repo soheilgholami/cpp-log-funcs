@@ -42,3 +42,15 @@ int main()
     return 0;
 }
 ```
+### Console Styling (`std::cout` / `std::cerr`)
+1. Include the header file. 
+```cpp
+#include "customised_log_funcs.hpp"
+```
+2. Use the functions:
+
+**Examples**
+```cpp
+ilog::info("information msg");
+ilog::error("error msg");
+```
