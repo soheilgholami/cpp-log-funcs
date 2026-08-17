@@ -6,12 +6,19 @@ Logger::Logger(const std::string &log_name,
     if (log_name.empty())
         throw std::invalid_argument("[Logger] Log name cannot be empty!");
 
-    std::filesystem::path dir = std::filesystem::path(REPO_ROOT) / (log_dir.empty() ? "log" : log_dir);
+    std::filesystem::path dir =
+        std::filesystem::path(REPO_ROOT) / (log_dir.empty() ? "log" : log_dir);
     std::filesystem::create_directories(dir);
 
     auto now = std::chrono::system_clock::now();
     std::time_t tt = std::chrono::system_clock::to_time_t(now);
-    std::tm tm = *std::localtime(&tt);
+
+    std::tm tm{};
+#if defined(_WIN32)
+    localtime_s(&tm, &tt);
+#else
+    localtime_r(&tt, &tm);
+#endif
 
     std::ostringstream fname;
     fname << log_name << "__"
@@ -30,11 +37,19 @@ Logger::Logger(const std::string &log_name,
     appender_->start_flush_thread();
 }
 
+Logger::~Logger()
+{
+    if (logger_)
+        logger_->flush_available_data();
+}
+
 void Logger::log(const std::string &key, double value)
 {
-    Eigen::Matrix<double, 1, 1> v(value);
     if (!logger_)
         throw std::runtime_error("[Logger] MatLogger2 is not created, cannot log: " + key);
+
+    Eigen::Matrix<double, 1, 1> v;
+    v(0, 0) = value;
     logger_->add(key, v);
 }
 

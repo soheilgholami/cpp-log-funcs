@@ -7,11 +7,23 @@
 #include <filesystem>
 #include <string>
 #include <stdexcept>
+#include <chrono>
+#include <ctime>
+#include <iomanip>
+#include <sstream>
 
 class Logger
 {
 public:
-    explicit Logger(const std::string &log_name, const std::string &log_dir);
+    explicit Logger(const std::string &log_name,
+                    const std::string &log_dir = "");
+
+    ~Logger();
+
+    Logger(const Logger &) = delete;
+    Logger &operator=(const Logger &) = delete;
+    Logger(Logger &&) noexcept = default;
+    Logger &operator=(Logger &&) noexcept = default;
 
     template <typename Derived>
     void log(const std::string &key, const Eigen::MatrixBase<Derived> &mat)
@@ -22,7 +34,6 @@ public:
     }
 
     void log(const std::string &key, double value);
-    
     void flush();
 
 private:
